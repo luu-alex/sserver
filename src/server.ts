@@ -3,7 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import { connect, fetchOrCreateProfile, findProfileByUsername, getCollection, updateProfile } from './mongodb';
 import { sendOrder, fetchAeonOrder } from './aeon';
-import { generateDailyShop, levelToGold } from './utils';
+import { generateDailyShop, generateStaticDailyShop, levelToGold } from './utils';
 import { ItemType, ProfileData, InventoryItem } from './types';
 import { dagger, getRandomWeapon, spear } from './weapons';
 import { basicChest } from './items';
@@ -87,8 +87,13 @@ app.post('/api/profile', async (req, res) => {
 
       // Fetch or create the profile
       const profile = await fetchOrCreateProfile(username, defaultProfileData);
-      // const items = generateDailyShop();
-      // profile.shop = items;
+
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      if (profile.shop.date !== today) {
+        const shop = generateStaticDailyShop();
+        profile.shop = shop;
+        updateProfile(username, {shop: profile.shop})
+      }
 
 
       // debug
@@ -329,6 +334,10 @@ app.post('/api/buyItem', async (req, res) => {
           profile.weapons.push(
             spear
           );
+        } else if (item.title === "Dagger") {
+          profile.weapons.push(
+            dagger
+          )
         }
       } else if (item.itemType === "item") {
         if (item.title === "chest") {

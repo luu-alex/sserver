@@ -1,6 +1,7 @@
 require('dotenv').config();
 import * as crypto from 'crypto';
 import { ItemType, ProfileData, Shop, ShopItem } from './types';
+import { sword } from './weapons';
 const appID = process.env.APP_ID;
 const secretKey = process.env.SECRET_KEY;
 const merchantID = process.env.MERCHANT_ID;
@@ -79,7 +80,41 @@ export const generateRandomItem = ( type: ItemType, index: number): ShopItem => 
     }
 
 }
-
+export const generateStaticDailyShop = (): Shop => {
+    const today = new Date().toISOString().split('T')[0];
+    const items: ShopItem[] = [];
+    items.push({
+        title: "Spear",
+        currency: "gold",
+        cost: 100,
+        bought: false,
+        index: 0,
+        itemType: "weapon",
+        rarity: "common",
+    })
+    items.push({
+        title: "Dagger",
+        currency: "gold",
+        cost: 3000,
+        bought: false,
+        index: 1,
+        itemType: "weapon",
+        rarity: "rare",
+    });
+    items.push({
+        title: "chest",
+        currency: "gold",
+        cost: 100,
+        bought: false,
+        index: 2,
+        itemType: "item",
+        rarity: "common",
+    })
+    return {
+        date: today,
+        items
+    }
+}
 export const generateDailyShop = (): Shop => {
     const items: ShopItem[] = [];
     const types: ItemType[] = ["weapon", "character", "item"];
