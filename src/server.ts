@@ -8,12 +8,18 @@ import { ItemType, ProfileData, InventoryItem } from './types';
 import { dagger, getRandomWeapon, spear } from './weapons';
 import { basicChest } from './items';
 
-
+const corsOptions = {
+  origin: 'https://shinyknights.netlify.app/', // Replace with your actual Netlify URL
+  methods: 'GET,POST,PUT,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization',
+};
 const app = express();
 const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.options('*', cors(corsOptions));
+
 connect();
 
 // Example route
